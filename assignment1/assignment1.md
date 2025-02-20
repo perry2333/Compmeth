@@ -94,14 +94,6 @@ implementations see
 
 1.  `http://en.wikipedia.org/wiki/Fast_Fourier_transform`
 
-The second reference has example code which is a radix-2 FFT *in
-floating-point arithmetic*. It nevertheless gives you an idea of the
-algorithm. The third reference (see `fft4g_h.c`) has a nice
-radix-4/radix-2 implementation, again in floating-point. We have taken
-the second example as a basis for the study on distortion in the
-fixed-point implementation since the distortion of a floating-point
-optimization is neglible.
-
 The main issue which arises in a fixed-point implementation is the
 scaling procedure. To guarantee that you don't overflow the computations
 proper re-scaling must be performed between each stage of the FFT. This
