@@ -115,7 +115,7 @@ Distortion tests
 
 We would like to characterize the distortion as a function of the signal
 amplitude and type of signal. We can compute the empirical distortion as
-$$D = 20*\log_{10}\left(\frac{1}{N}\sum_{n=0}^{N-1}|X_{n,\mathrm{fixed}}- X_{n,\mathrm{float}}|^2\right)$$
+$$D = 10*\log_{10}\left(\frac{1}{N}\sum_{n=0}^{N-1}|X_{n,\mathrm{fixed}}- X_{n,\mathrm{float}}|^2\right)$$
 
 Three signal types are of interest. The basic test is with a sinusoidal
 input. The waveform resulting from fixed-point processing is compared to
