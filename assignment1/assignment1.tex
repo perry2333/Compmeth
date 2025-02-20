@@ -23,7 +23,7 @@ Fixed-point FFTs find common application in digital communication systems for OF
 reception, and often as well for channel estimation and equalization in single-carrier systems. 
 
 The FFT is an algorithm for implementing the {\em discrete-Fourier Transform (DFT)} which transforms
-and discrete-time input waveform, $x_{n}, n=0,1,\cdots N$ into an output waveform $X_{k}, k=0,1,\cdots,N$
+and discrete-time input waveform, $x_{n}, n=0,1,\cdots N-1$ into an output waveform $X_{k}, k=0,1,\cdots,N-1$
 according to the relationship
 \begin{equation}
 X_{k} = \frac{1}{\sqrt{N}}\sum_{n=0}^{N-1}x_{k}W_{N}^{kn}
@@ -38,11 +38,11 @@ or more compactly as $\mathbf{x} = \mathrm{IDFT}(\mathbf{X})$.
 \section{Getting Started}
 
 You will create a fixed-point performance testbench of the above algorithm in non-optimized C (at least fill in what
-has not been done for you already). The starting point is in the directory {\tt work}.  The goal of the testbench is to
+has not been done for you already). The starting point is in the directory {\tt assignment1}.  The goal of the testbench is to
 assess the performance, in terms of distortion, of different parametrization options for the fixed-point implementation
 as a function of the type of signal we are trying to process.  This is discussed later.  
 
-There are several files in the {\tt work} directory:
+There are several files in the {\tt assignment1} directory:
 \begin{enumerate}
 \item {\tt Makefile}: This is a GNU makefile for generating the testbench. You shouldn't have to modify it
 \item {\tt complex.h}:  This is a header file containing complex number structures.  You shouldn't have to modify it.

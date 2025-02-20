@@ -23,8 +23,8 @@ equalization in single-carrier systems.
 
 The FFT is an algorithm for implementing the *discrete-Fourier Transform
 (DFT)* which transforms and discrete-time input waveform,
-$x_{n}, n=0,1,\cdots N$ into an output waveform $X_{k}, k=0,1,\cdots,N$
-according to the relationship
+$x_{n}, n=0,1,\cdots N-1$ into an output waveform
+$X_{k}, k=0,1,\cdots,N-1$ according to the relationship
 $$X_{k} = \frac{1}{\sqrt{N}}\sum_{n=0}^{N-1}x_{k}W_{N}^{kn}$$ where
 $W_{N} = e^{-\frac{j2\pi}{N}}$. This is written more compactly as
 $\mathbf{X} = \mathrm{DFT}(\mathbf{x})$. Note that this version of the
@@ -37,13 +37,13 @@ Getting Started
 
 You will create a fixed-point performance testbench of the above
 algorithm in non-optimized C (at least fill in what has not been done
-for you already). The starting point is in the directory `work`. The
-goal of the testbench is to assess the performance, in terms of
+for you already). The starting point is in the directory `assignment1`.
+The goal of the testbench is to assess the performance, in terms of
 distortion, of different parametrization options for the fixed-point
 implementation as a function of the type of signal we are trying to
 process. This is discussed later.
 
-There are several files in the `work` directory:
+There are several files in the `assignment1` directory:
 
 1.  `Makefile`: This is a GNU makefile for generating the testbench. You
     shouldn't have to modify it
