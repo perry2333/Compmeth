@@ -174,7 +174,7 @@ void radix4(struct complex *x, int N)
 
 /** RADIX-4 Fixed-point Normalized FFT ALGORITHM for Q15 arithmetic*/
 /* To be filled in by you .... */
-/*
+
 
 void radix4_fixed_Q15(struct complex16 *x,   // Input in Q15 format 
 		      int N,                 // Size of FFT
@@ -204,24 +204,26 @@ void radix4_fixed_Q15(struct complex16 *x,   // Input in Q15 format
       x[(2*N2) + n2].i >>= scale[stage];
       x[(3*N2) + n2].i >>= scale[stage];
       
-      // Radix 4 Butterfly 
-      bfly[0].r = XXXXXXXXXXXXXXXXXXXXXXXxx
-      bfly[0].i = XXXXXXXXXXXXXXXXXXXXXXXxx
-      bfly[1].r = XXXXXXXXXXXXXXXXXXXXXXXxx
-      bfly[1].i = XXXXXXXXXXXXXXXXXXXXXXXxx
+      // Radix 4 Butterfly computation for Q15 format
+      bfly[0].r = (x[n2].r + x[N2 + n2].r + x[2*N2 + n2].r + x[3*N2 + n2].r);
+      bfly[0].i = (x[n2].i + x[N2 + n2].i + x[2*N2 + n2].i + x[3*N2 + n2].i);
 
-      bfly[2].r = XXXXXXXXXXXXXXXXXXXXXXXxx
-      bfly[2].i = XXXXXXXXXXXXXXXXXXXXXXXxx
+      bfly[1].r = (x[n2].r + x[N2 + n2].i - x[2*N2 + n2].r - x[3*N2 + n2].i);
+      bfly[1].i = (x[n2].i - x[N2 + n2].r - x[2*N2 + n2].i + x[3*N2 + n2].r);
 
-      bfly[3].r = XXXXXXXXXXXXXXXXXXXXXXXxx
-      bfly[3].i = XXXXXXXXXXXXXXXXXXXXXXXxx
+      bfly[2].r = (x[n2].r - x[N2 + n2].r + x[2*N2 + n2].r - x[3*N2 + n2].r);
+      bfly[2].i = (x[n2].i - x[N2 + n2].i + x[2*N2 + n2].i - x[3*N2 + n2].i);
+
+      bfly[3].r = (x[n2].r - x[N2 + n2].i - x[2*N2 + n2].r + x[3*N2 + n2].i);
+      bfly[3].i = (x[n2].i + x[N2 + n2].r - x[2*N2 + n2].i - x[3*N2 + n2].r);
 
 
       // In-place results
       for (k1=0; k1<N1; k1++)
 	{
 	  twiddle_fixed(&W, N, (double)k1*(double)n2);
-	  x[n2 + N2*k1].r = XXXXXXXXXXXXXXXXXXXXXXXXXx
+	  x[n2 + N2*k1].r = (bfly[k1].r * W.r - bfly[k1].i * W.i) >> 15;
+    x[n2 + N2*k1].i = (bfly[k1].i * W.r + bfly[k1].r * W.i) >> 15;
 	}
     }
     
@@ -236,7 +238,7 @@ void radix4_fixed_Q15(struct complex16 *x,   // Input in Q15 format
 
 /** RADIX-4 Fixed-point Normalized FFT ALGORITHM for Q15 arithmetic*/
 /* To be filled in by you*/
-/*
+
 void radix4_fixed_Q24xQ17(struct complex32 *x,   // Input in Q24 format 
 			  int N,                 // Size of FFT
 			  unsigned char *scale,  // Pointer to scaling schedule
@@ -265,23 +267,25 @@ void radix4_fixed_Q24xQ17(struct complex32 *x,   // Input in Q24 format
       x[(3*N2) + n2].i >>= scale[stage];
       
       // Radix 4 Butterfly 
-      bfly[0].r = XXXXXXXXXXXXXXXXXXXXXXXxx
-      bfly[0].i = XXXXXXXXXXXXXXXXXXXXXXXxx
-      bfly[1].r = XXXXXXXXXXXXXXXXXXXXXXXxx
-      bfly[1].i = XXXXXXXXXXXXXXXXXXXXXXXxx
+      bfly[0].r = (x[n2].r + x[N2 + n2].r + x[2*N2 + n2].r + x[3*N2 + n2].r);
+      bfly[0].i = (x[n2].i + x[N2 + n2].i + x[2*N2 + n2].i + x[3*N2 + n2].i);
 
-      bfly[2].r = XXXXXXXXXXXXXXXXXXXXXXXxx
-      bfly[2].i = XXXXXXXXXXXXXXXXXXXXXXXxx
+      bfly[1].r = (x[n2].r + x[N2 + n2].i - x[2*N2 + n2].r - x[3*N2 + n2].i);
+      bfly[1].i = (x[n2].i - x[N2 + n2].r - x[2*N2 + n2].i + x[3*N2 + n2].r);
 
-      bfly[3].r = XXXXXXXXXXXXXXXXXXXXXXXxx
-      bfly[3].i = XXXXXXXXXXXXXXXXXXXXXXXxx
+      bfly[2].r = (x[n2].r - x[N2 + n2].r + x[2*N2 + n2].r - x[3*N2 + n2].r);
+      bfly[2].i = (x[n2].i - x[N2 + n2].i + x[2*N2 + n2].i - x[3*N2 + n2].i);
+
+      bfly[3].r = (x[n2].r - x[N2 + n2].i - x[2*N2 + n2].r + x[3*N2 + n2].i);
+      bfly[3].i = (x[n2].i + x[N2 + n2].r - x[2*N2 + n2].i - x[3*N2 + n2].r);
 
 
       // In-place results
       for (k1=0; k1<N1; k1++)
 	{
 	  twiddle_fixed_Q17(&W, N, (double)k1*(double)n2);
-	  x[n2 + N2*k1].r = XXXXXXXXXXXXXXXXXXXXXXXXXx
+	  x[n2 + N2*k1].r = (bfly[k1].r * W.r - bfly[k1].i * W.i) >> 17;
+    x[n2 + N2*k1].i = (bfly[k1].i * W.r + bfly[k1].r * W.i) >> 17;
 	}
     }
     
@@ -292,7 +296,7 @@ void radix4_fixed_Q24xQ17(struct complex32 *x,   // Input in Q24 format
 	radix4_fixed_Q24xQ17(&x[N2*k1], N2,scale,stage+1);
       }
 }
-*/
+
 
 QAM_input(struct complex *data,double amp,int N,int Nu,char M) {
 
