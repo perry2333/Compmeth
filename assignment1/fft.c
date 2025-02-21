@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <math.h>
 #include <sys/time.h>
-
+#include <string.h>
 #include "complex.h"
+#include "taus.c"
 
 #define PI 3.14159265359
 #define MAXPOW 24
@@ -298,7 +299,7 @@ void radix4_fixed_Q24xQ17(struct complex32 *x,   // Input in Q24 format
 }
 
 
-QAM_input(struct complex *data,double amp,int N,int Nu,char M) {
+void QAM_input(struct complex *data,double amp,int N,int Nu,char M) {
 
   int i,rv;
   int FCO = (N-(Nu>>1));   // First non-zero carrier offset
