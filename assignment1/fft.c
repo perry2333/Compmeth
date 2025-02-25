@@ -334,94 +334,77 @@ void QAM_input(struct complex *data,double amp,int N,int Nu,char M) {
   }
 }
 
-void fft_distortion_test(int N,                              // dimension of FFT under test 
-			 char test,                          // type of test
-			 double input_dB,                    // strength of input
-			 char *scale,                        // pointr to scaling schedule
-			 double *maxSNR,                     // pointer best signal-to-noise ratio
-			 char *maxscale,                     // pointer to best scaling schedule
-			 struct complex *data,               // pointer to floating point data vector
-			 struct complex16 *data16,           // pointer to Q15 data vector
-			 struct complex32 *data32)           // pointer to Q17 data vector
-{
-
-
-  double mean_in=0.0,mean_error=0.0,SNR;
+void fft_distortion_test(int N, char test, double input_dB, char *scale, double *maxSNR, char *maxscale, struct complex *data, struct complex16 *data16, struct complex32 *data32) {
+  double mean_in = 0.0, mean_error = 0.0, SNR;
   int i;
-
-
-  for (i=0; i<N; i++)
-    {
-      data[i].r=0.0;
-      data[i].i=0.0;
-      data16[i].r=0;
-      data16[i].i=0;
-      data32[i].r=0;
-      data32[i].i=0;
-	  
-    }
-      
-    //printf("\n 1 \n");
-
+  FILE *file = fopen("fft_output.txt", "w");
+  if (!file) {
+      fprintf(stderr, "Error opening file for writing!\n");
+      return;
+  }
+  
+  for (i = 0; i < N; i++) {
+      data[i].r = 0.0;
+      data[i].i = 0.0;
+      data16[i].r = 0;
+      data16[i].i = 0;
+      data32[i].r = 0;
+      data32[i].i = 0;
+  }
+  
   switch (test) {
-  case 0:       /** Generate cosine **/
-    for (i=0; i<N; i++)
-      data[i].r=pow(10,.05*input_dB)*cos(2.0*PI*.1*i)*sqrt(2);
-
-    break;
-  case 1:    // QPSK
-    QAM_input(data,pow(10,.05*input_dB),N,N,0);
-    break;
-
-  case 2:    // 16-QAM
-    QAM_input(data,pow(10,.05*input_dB),N,N,1);
-    break;
-
-  default:
-    break;
+      case 0:
+          for (i = 0; i < N; i++)
+              data[i].r = pow(10, .05 * input_dB) * cos(2.0 * M_PI * .1 * i) * sqrt(2);
+          break;
+      case 1:
+          QAM_input(data, pow(10, .05 * input_dB), N, N, 0);
+          break;
+      case 2:
+          QAM_input(data, pow(10, .05 * input_dB), N, N, 1);
+          break;
+      default:
+          break;
   }
-
-  // Make fixed-point versions of data
-  for (i=0;i<N;i++) {
-    data16[i].r = (short)(data[i].r*32767);
-    data16[i].i = (short)(data[i].i*32767);
-    data32[i].r = (int)(data[i].r*32767);
-    data32[i].i = (int)(data[i].i*32767);
-
+  
+  for (i = 0; i < N; i++) {
+      data16[i].r = (short)(data[i].r * 32767);
+      data16[i].i = (short)(data[i].i * 32767);
+      data32[i].r = (int)(data[i].r * 32767);
+      data32[i].i = (int)(data[i].i * 32767);
   }
-
-  // Do Floating-point FFT
+  
   radix4(data, N);
-  for (i=0;i<N;i++) {
-
-    data[i].r /= sqrt(N);
-    data[i].i /= sqrt(N);
+  for (i = 0; i < N; i++) {
+      data[i].r /= sqrt(N);
+      data[i].i /= sqrt(N);
   }
   bit_r4_reorder(data, N);
-
-  // Do Q15 FFT 
-  radix4_fixed_Q15(data16, N,scale,0);
-  bit_r4_reorder_fixed_Q15(data16, N,scale[6]);
-
- 
-		  
-
-  // Compute Distortion statistics
+  
+  radix4_fixed_Q15(data16, N, scale, 0);
+  bit_r4_reorder_fixed_Q15(data16, N, scale[6]);
+  
   mean_error = 0.0;
   mean_in = 0.0;
-  for (i=0;i<N;i++) {
-    mean_in += data[i].r*data[i].r + data[i].i*data[i].i;
-    mean_error += pow((data[i].r-((double)data16[i].r/32767.0)),2) + pow((data[i].i-((double)data16[i].i/32767.0)),2);
+  for (i = 0; i < N; i++) {
+      mean_in += data[i].r * data[i].r + data[i].i * data[i].i;
+      mean_error += pow((data[i].r - ((double)data16[i].r / 32767.0)), 2) + pow((data[i].i - ((double)data16[i].i / 32767.0)), 2);
   }
-		  
-  SNR = 10*log10(mean_in/mean_error);
-  // printf("%d %d %d %d %d %d %d : %f\n",scale[0],scale[1],scale[2],scale[3],scale[4],scale[5],scale[6],SNR);
+  
+  SNR = 10 * log10(mean_in / mean_error);
   if (SNR > *maxSNR) {
-    *maxSNR = SNR;
-    memcpy(maxscale,scale,7);
+      *maxSNR = SNR;
+      memcpy(maxscale, scale, 7);
   }
-
+  
+  fprintf(file, "data = [\n");
+  for (i = 0; i < N; i++) {
+      fprintf(file, "%f %f %d %d\n", data[i].r, data[i].i, data16[i].r , data16[i].i);
+  }
+  fprintf(file, "];\n");
+  fclose(file);
 }
+
 
 
 
@@ -489,7 +472,7 @@ void main(int argc, char *argv[])
 
   printf("res_%d = [ \n",N);    
     
-  for (input_dB=-40;input_dB<0;input_dB++) {
+  for (input_dB=-40;input_dB<-39;input_dB++) {
     
 
     switch (N) {
