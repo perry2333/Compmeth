@@ -5,6 +5,7 @@
 #include <string.h>
 #include "complex.h"
 #include "taus.c"
+#include "fixed_point.c"
 
 #define PI 3.14159265359
 #define MAXPOW 24
@@ -207,26 +208,28 @@ void radix4_fixed_Q15(struct complex16 *x,   // Input in Q15 format
       
       // Radix 4 Butterfly computation for Q15 format
       //printf("1");
-      bfly[0].r = (x[n2].r + x[N2 + n2].r + x[2*N2 + n2].r + x[3*N2 + n2].r);
-      bfly[0].i = (x[n2].i + x[N2 + n2].i + x[2*N2 + n2].i + x[3*N2 + n2].i);
+      bfly[0].r = SAT_ADD16(SAT_ADD16(x[n2].r, x[N2 + n2].r), SAT_ADD16(x[2 * N2 + n2].r, x[3 * N2 + n2].r));
+    bfly[0].i = SAT_ADD16(SAT_ADD16(x[n2].i, x[N2 + n2].i), SAT_ADD16(x[2 * N2 + n2].i, x[3 * N2 + n2].i));
 
-      bfly[1].r = (x[n2].r + x[N2 + n2].i - x[2*N2 + n2].r - x[3*N2 + n2].i);
-      bfly[1].i = (x[n2].i - x[N2 + n2].r - x[2*N2 + n2].i + x[3*N2 + n2].r);
+    bfly[1].r = SAT_ADD16(SAT_ADD16(x[n2].r, x[N2 + n2].i), SAT_ADD16(-x[2 * N2 + n2].r, -x[3 * N2 + n2].i));
+    bfly[1].i = SAT_ADD16(SAT_ADD16(x[n2].i, -x[N2 + n2].r), SAT_ADD16(-x[2 * N2 + n2].i, x[3 * N2 + n2].r));
 
-      bfly[2].r = (x[n2].r - x[N2 + n2].r + x[2*N2 + n2].r - x[3*N2 + n2].r);
-      bfly[2].i = (x[n2].i - x[N2 + n2].i + x[2*N2 + n2].i - x[3*N2 + n2].i);
+    bfly[2].r = SAT_ADD16(SAT_ADD16(x[n2].r, -x[N2 + n2].r), SAT_ADD16(x[2 * N2 + n2].r, -x[3 * N2 + n2].r));
+    bfly[2].i = SAT_ADD16(SAT_ADD16(x[n2].i, -x[N2 + n2].i), SAT_ADD16(x[2 * N2 + n2].i, -x[3 * N2 + n2].i));
 
-      bfly[3].r = (x[n2].r - x[N2 + n2].i - x[2*N2 + n2].r + x[3*N2 + n2].i);
-      bfly[3].i = (x[n2].i + x[N2 + n2].r - x[2*N2 + n2].i - x[3*N2 + n2].r);
+    bfly[3].r = SAT_ADD16(SAT_ADD16(x[n2].r, -x[N2 + n2].i), SAT_ADD16(-x[2 * N2 + n2].r, x[3 * N2 + n2].i));
+    bfly[3].i = SAT_ADD16(SAT_ADD16(x[n2].i, x[N2 + n2].r), SAT_ADD16(-x[2 * N2 + n2].i, -x[3 * N2 + n2].r));
 
 
       // In-place results
       for (k1=0; k1<N1; k1++)
 	{
 	  twiddle_fixed(&W, N, (double)k1*(double)n2);
-	  x[n2 + N2*k1].r = (bfly[k1].r * W.r - bfly[k1].i * W.i);
-    x[n2 + N2*k1].i = (bfly[k1].i * W.r + bfly[k1].r * W.i);
-    /*printf("NoShift: r=0x%08X, WithShift: r=0x%08X\n", 
+    x[n2 + N2 * k1].r =  SAT_ADD16(FIX_MPY(bfly[k1].r,W.r),-FIX_MPY(bfly[k1].i, W.i));
+    x[n2 + N2 * k1].i =  SAT_ADD16(FIX_MPY(bfly[k1].i,W.r), FIX_MPY(bfly[k1].r, W.i));
+	  /*x[n2 + N2*k1].r = (bfly[k1].r * W.r - bfly[k1].i * W.i)>>15;
+    x[n2 + N2*k1].i = (bfly[k1].i * W.r + bfly[k1].r * W.i)>>15;
+    printf("NoShift: r=0x%08X, WithShift: r=0x%08X\n", 
       (bfly[k1].r * W.r - bfly[k1].i * W.i),
       (bfly[k1].r * W.r - bfly[k1].i * W.i) >> 15);*/
 	}
@@ -272,25 +275,25 @@ void radix4_fixed_Q24xQ17(struct complex32 *x,   // Input in Q24 format
       x[(3*N2) + n2].i >>= scale[stage];
       
       // Radix 4 Butterfly 
-      bfly[0].r = (x[n2].r + x[N2 + n2].r + x[2*N2 + n2].r + x[3*N2 + n2].r);
-      bfly[0].i = (x[n2].i + x[N2 + n2].i + x[2*N2 + n2].i + x[3*N2 + n2].i);
+      bfly[0].r = SAT_ADD25(SAT_ADD25(x[n2].r, x[N2 + n2].r), SAT_ADD25(x[2 * N2 + n2].r, x[3 * N2 + n2].r));
+    bfly[0].i = SAT_ADD25(SAT_ADD25(x[n2].i, x[N2 + n2].i), SAT_ADD25(x[2 * N2 + n2].i, x[3 * N2 + n2].i));
 
-      bfly[1].r = (x[n2].r + x[N2 + n2].i - x[2*N2 + n2].r - x[3*N2 + n2].i);
-      bfly[1].i = (x[n2].i - x[N2 + n2].r - x[2*N2 + n2].i + x[3*N2 + n2].r);
+    bfly[1].r = SAT_ADD25(SAT_ADD25(x[n2].r, x[N2 + n2].i), SAT_ADD25(-x[2 * N2 + n2].r, -x[3 * N2 + n2].i));
+    bfly[1].i = SAT_ADD25(SAT_ADD25(x[n2].i, -x[N2 + n2].r), SAT_ADD25(-x[2 * N2 + n2].i, x[3 * N2 + n2].r));
 
-      bfly[2].r = (x[n2].r - x[N2 + n2].r + x[2*N2 + n2].r - x[3*N2 + n2].r);
-      bfly[2].i = (x[n2].i - x[N2 + n2].i + x[2*N2 + n2].i - x[3*N2 + n2].i);
+    bfly[2].r = SAT_ADD25(SAT_ADD25(x[n2].r, -x[N2 + n2].r), SAT_ADD25(x[2 * N2 + n2].r, -x[3 * N2 + n2].r));
+    bfly[2].i = SAT_ADD25(SAT_ADD25(x[n2].i, -x[N2 + n2].i), SAT_ADD16(x[2 * N2 + n2].i, -x[3 * N2 + n2].i));
 
-      bfly[3].r = (x[n2].r - x[N2 + n2].i - x[2*N2 + n2].r + x[3*N2 + n2].i);
-      bfly[3].i = (x[n2].i + x[N2 + n2].r - x[2*N2 + n2].i - x[3*N2 + n2].r);
+    bfly[3].r = SAT_ADD25(SAT_ADD25(x[n2].r, -x[N2 + n2].i), SAT_ADD25(-x[2 * N2 + n2].r, x[3 * N2 + n2].i));
+    bfly[3].i = SAT_ADD25(SAT_ADD25(x[n2].i, x[N2 + n2].r), SAT_ADD25(-x[2 * N2 + n2].i, -x[3 * N2 + n2].r));
 
 
       // In-place results
       for (k1=0; k1<N1; k1++)
 	{
 	  twiddle_fixed_Q17(&W, N, (double)k1*(double)n2);
-	  x[n2 + N2*k1].r = (bfly[k1].r * W.r - bfly[k1].i * W.i) ;
-    x[n2 + N2*k1].i = (bfly[k1].i * W.r + bfly[k1].r * W.i) ;
+	  x[n2 + N2 * k1].r =  SAT_ADD25(FIX_MPY25by18(bfly[k1].r,W.r),-FIX_MPY25by18(bfly[k1].i, W.i));
+    x[n2 + N2 * k1].i =  SAT_ADD25(FIX_MPY25by18(bfly[k1].i,W.r), FIX_MPY25by18(bfly[k1].r, W.i));
 	}
     }
     
@@ -337,7 +340,13 @@ void QAM_input(struct complex *data,double amp,int N,int Nu,char M) {
 void fft_distortion_test(int N, char test, double input_dB, char *scale, double *maxSNR, char *maxscale, struct complex *data, struct complex16 *data16, struct complex32 *data32) {
   double mean_in = 0.0, mean_error = 0.0, SNR;
   int i;
-  FILE *file = fopen("fft_output.txt", "w");
+  char Title[50];  // Buffer to store filename
+
+  // Generate file name: fft_output_<input_dB>.txt
+  sprintf(Title, "fft_output_%.0f.txt", -input_dB);
+
+  // Open the file
+  FILE *file = fopen(Title, "w");
   if (!file) {
       fprintf(stderr, "Error opening file for writing!\n");
       return;
