@@ -209,16 +209,16 @@ void radix4_fixed_Q15(struct complex16 *x,   // Input in Q15 format
       // Radix 4 Butterfly computation for Q15 format
       //printf("1");
       bfly[0].r = SAT_ADD16(SAT_ADD16(x[n2].r, x[N2 + n2].r), SAT_ADD16(x[2 * N2 + n2].r, x[3 * N2 + n2].r));
-    bfly[0].i = SAT_ADD16(SAT_ADD16(x[n2].i, x[N2 + n2].i), SAT_ADD16(x[2 * N2 + n2].i, x[3 * N2 + n2].i));
+      bfly[0].i = SAT_ADD16(SAT_ADD16(x[n2].i, x[N2 + n2].i), SAT_ADD16(x[2 * N2 + n2].i, x[3 * N2 + n2].i));
 
-    bfly[1].r = SAT_ADD16(SAT_ADD16(x[n2].r, x[N2 + n2].i), SAT_ADD16(-x[2 * N2 + n2].r, -x[3 * N2 + n2].i));
-    bfly[1].i = SAT_ADD16(SAT_ADD16(x[n2].i, -x[N2 + n2].r), SAT_ADD16(-x[2 * N2 + n2].i, x[3 * N2 + n2].r));
+      bfly[1].r = SAT_ADD16(SAT_ADD16(x[n2].r, x[N2 + n2].i), SAT_ADD16(-x[2 * N2 + n2].r, -x[3 * N2 + n2].i));
+      bfly[1].i = SAT_ADD16(SAT_ADD16(x[n2].i, -x[N2 + n2].r), SAT_ADD16(-x[2 * N2 + n2].i, x[3 * N2 + n2].r));
 
-    bfly[2].r = SAT_ADD16(SAT_ADD16(x[n2].r, -x[N2 + n2].r), SAT_ADD16(x[2 * N2 + n2].r, -x[3 * N2 + n2].r));
-    bfly[2].i = SAT_ADD16(SAT_ADD16(x[n2].i, -x[N2 + n2].i), SAT_ADD16(x[2 * N2 + n2].i, -x[3 * N2 + n2].i));
+      bfly[2].r = SAT_ADD16(SAT_ADD16(x[n2].r, -x[N2 + n2].r), SAT_ADD16(x[2 * N2 + n2].r, -x[3 * N2 + n2].r));
+      bfly[2].i = SAT_ADD16(SAT_ADD16(x[n2].i, -x[N2 + n2].i), SAT_ADD16(x[2 * N2 + n2].i, -x[3 * N2 + n2].i));
 
-    bfly[3].r = SAT_ADD16(SAT_ADD16(x[n2].r, -x[N2 + n2].i), SAT_ADD16(-x[2 * N2 + n2].r, x[3 * N2 + n2].i));
-    bfly[3].i = SAT_ADD16(SAT_ADD16(x[n2].i, x[N2 + n2].r), SAT_ADD16(-x[2 * N2 + n2].i, -x[3 * N2 + n2].r));
+      bfly[3].r = SAT_ADD16(SAT_ADD16(x[n2].r, -x[N2 + n2].i), SAT_ADD16(-x[2 * N2 + n2].r, x[3 * N2 + n2].i));
+      bfly[3].i = SAT_ADD16(SAT_ADD16(x[n2].i, x[N2 + n2].r), SAT_ADD16(-x[2 * N2 + n2].i, -x[3 * N2 + n2].r));
 
 
       // In-place results
@@ -276,16 +276,16 @@ void radix4_fixed_Q24xQ17(struct complex32 *x,   // Input in Q24 format
       
       // Radix 4 Butterfly 
       bfly[0].r = SAT_ADD25(SAT_ADD25(x[n2].r, x[N2 + n2].r), SAT_ADD25(x[2 * N2 + n2].r, x[3 * N2 + n2].r));
-    bfly[0].i = SAT_ADD25(SAT_ADD25(x[n2].i, x[N2 + n2].i), SAT_ADD25(x[2 * N2 + n2].i, x[3 * N2 + n2].i));
+      bfly[0].i = SAT_ADD25(SAT_ADD25(x[n2].i, x[N2 + n2].i), SAT_ADD25(x[2 * N2 + n2].i, x[3 * N2 + n2].i));
 
-    bfly[1].r = SAT_ADD25(SAT_ADD25(x[n2].r, x[N2 + n2].i), SAT_ADD25(-x[2 * N2 + n2].r, -x[3 * N2 + n2].i));
-    bfly[1].i = SAT_ADD25(SAT_ADD25(x[n2].i, -x[N2 + n2].r), SAT_ADD25(-x[2 * N2 + n2].i, x[3 * N2 + n2].r));
+      bfly[1].r = SAT_ADD25(SAT_ADD25(x[n2].r, x[N2 + n2].i), SAT_ADD25(-x[2 * N2 + n2].r, -x[3 * N2 + n2].i));
+      bfly[1].i = SAT_ADD25(SAT_ADD25(x[n2].i, -x[N2 + n2].r), SAT_ADD25(-x[2 * N2 + n2].i, x[3 * N2 + n2].r));
 
-    bfly[2].r = SAT_ADD25(SAT_ADD25(x[n2].r, -x[N2 + n2].r), SAT_ADD25(x[2 * N2 + n2].r, -x[3 * N2 + n2].r));
-    bfly[2].i = SAT_ADD25(SAT_ADD25(x[n2].i, -x[N2 + n2].i), SAT_ADD16(x[2 * N2 + n2].i, -x[3 * N2 + n2].i));
+      bfly[2].r = SAT_ADD25(SAT_ADD25(x[n2].r, -x[N2 + n2].r), SAT_ADD25(x[2 * N2 + n2].r, -x[3 * N2 + n2].r));
+      bfly[2].i = SAT_ADD25(SAT_ADD25(x[n2].i, -x[N2 + n2].i), SAT_ADD16(x[2 * N2 + n2].i, -x[3 * N2 + n2].i));
 
-    bfly[3].r = SAT_ADD25(SAT_ADD25(x[n2].r, -x[N2 + n2].i), SAT_ADD25(-x[2 * N2 + n2].r, x[3 * N2 + n2].i));
-    bfly[3].i = SAT_ADD25(SAT_ADD25(x[n2].i, x[N2 + n2].r), SAT_ADD25(-x[2 * N2 + n2].i, -x[3 * N2 + n2].r));
+      bfly[3].r = SAT_ADD25(SAT_ADD25(x[n2].r, -x[N2 + n2].i), SAT_ADD25(-x[2 * N2 + n2].r, x[3 * N2 + n2].i));
+      bfly[3].i = SAT_ADD25(SAT_ADD25(x[n2].i, x[N2 + n2].r), SAT_ADD25(-x[2 * N2 + n2].i, -x[3 * N2 + n2].r));
 
 
       // In-place results
@@ -390,14 +390,14 @@ void fft_distortion_test(int N, char test, double input_dB, char *scale, double 
   }
   bit_r4_reorder(data, N);
   
-  radix4_fixed_Q15(data16, N, scale, 0);
-  bit_r4_reorder_fixed_Q15(data16, N, scale[6]);
+  radix4_fixed_Q24xQ17(data32, N, scale, 0);
+  bit_r4_reorder_fixed_Q17(data32, N);
   
   mean_error = 0.0;
   mean_in = 0.0;
   for (i = 0; i < N; i++) {
       mean_in += data[i].r * data[i].r + data[i].i * data[i].i;
-      mean_error += pow((data[i].r - ((double)data16[i].r / 32767.0)), 2) + pow((data[i].i - ((double)data16[i].i / 32767.0)), 2);
+      mean_error += pow((data[i].r - ((double)data32[i].r / 32767.0)), 2) + pow((data[i].i - ((double)data32[i].i / 32767.0)), 2);
   }
   
   SNR = 10 * log10(mean_in / mean_error);
@@ -408,7 +408,7 @@ void fft_distortion_test(int N, char test, double input_dB, char *scale, double 
   
   fprintf(file, "data = [\n");
   for (i = 0; i < N; i++) {
-      fprintf(file, "%f %f %d %d\n", data[i].r, data[i].i, data16[i].r , data16[i].i);
+      fprintf(file, "%f %f %d %d\n", data[i].r, data[i].i, data32[i].r , data32[i].i);
   }
   fprintf(file, "];\n");
   fclose(file);
