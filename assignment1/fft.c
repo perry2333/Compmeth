@@ -227,11 +227,6 @@ void radix4_fixed_Q15(struct complex16 *x,   // Input in Q15 format
 	  twiddle_fixed(&W, N, (double)k1*(double)n2);
     x[n2 + N2 * k1].r =  SAT_ADD16(FIX_MPY(bfly[k1].r,W.r),-FIX_MPY(bfly[k1].i, W.i));
     x[n2 + N2 * k1].i =  SAT_ADD16(FIX_MPY(bfly[k1].i,W.r), FIX_MPY(bfly[k1].r, W.i));
-	  /*x[n2 + N2*k1].r = (bfly[k1].r * W.r - bfly[k1].i * W.i)>>15;
-    x[n2 + N2*k1].i = (bfly[k1].i * W.r + bfly[k1].r * W.i)>>15;
-    printf("NoShift: r=0x%08X, WithShift: r=0x%08X\n", 
-      (bfly[k1].r * W.r - bfly[k1].i * W.i),
-      (bfly[k1].r * W.r - bfly[k1].i * W.i) >> 15);*/
 	}
     }
     
@@ -367,10 +362,19 @@ void fft_distortion_test(int N, char test, double input_dB, char *scale, double 
               data[i].r = pow(10, .05 * input_dB) * cos(2.0 * M_PI * .1 * i) * sqrt(2);
           break;
       case 1:
-          QAM_input(data, pow(10, .05 * input_dB), N, N, 0);
+          QAM_input(data, pow(10, .05 * input_dB), N, N, 1);
           break;
       case 2:
-          QAM_input(data, pow(10, .05 * input_dB), N, N, 1);
+          srand(time(NULL));  // Seed random number generator
+          for (i = 0; i < N; i++) {
+              // Generate uniform random values between -1 and 1
+              double noise_real = ((double)rand() / RAND_MAX) * 2.0 - 1.0;
+              double noise_imag = ((double)rand() / RAND_MAX) * 2.0 - 1.0;
+
+              // Scale by input_dB to adjust signal power
+              data[i].r = pow(10, .05 * input_dB) * noise_real;
+              data[i].i = pow(10, .05 * input_dB) * noise_imag;
+          }
           break;
       default:
           break;
