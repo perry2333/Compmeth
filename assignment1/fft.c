@@ -6,6 +6,7 @@
 #include "complex.h"
 #include "taus.c"
 #include "fixed_point.c"
+#include "rangen_double.c"
 
 #define PI 3.14159265359
 #define MAXPOW 24
@@ -366,6 +367,7 @@ void fft_distortion_test(int N, char test, double input_dB, char *scale, double 
           break;
       case 2:
           srand(time(NULL));  // Seed random number generator
+          
           for (i = 0; i < N; i++) {
               // Generate uniform random values between -1 and 1
               double noise_real = ((double)rand() / RAND_MAX) * 2.0 - 1.0;
@@ -375,6 +377,7 @@ void fft_distortion_test(int N, char test, double input_dB, char *scale, double 
               data[i].r = pow(10, .05 * input_dB) * noise_real;
               data[i].i = pow(10, .05 * input_dB) * noise_imag;
           }
+
           break;
       default:
           break;
@@ -426,7 +429,7 @@ void fft_distortion_test(int N, char test, double input_dB, char *scale, double 
 #define SCALE1024 0x0056
 #define SCALE4096 0x0156
 
-void main(int argc, char *argv[])
+void FFT_main(int argc, char *argv[])
 {
 
   int    N, radix=4,test;
@@ -484,7 +487,16 @@ void main(int argc, char *argv[])
     }
 
   printf("res_%d = [ \n",N);    
-    
+  char Title_1[50];
+  sprintf(Title_1, "distortion_test_%d_%d.txt", N,test);
+
+  // Open the file
+  FILE *file1 = fopen(Title_1, "w");
+  if (!file1) {
+      fprintf(stderr, "Error opening file for writing!\n");
+      return;
+  }
+
   for (input_dB=-40;input_dB<0;input_dB++) {
     
 
@@ -542,8 +554,11 @@ printf("%f, %f, %% Optimum Scaling :", input_dB, maxSNR);
 for (int i = 0; i <= 6; i++) {
     printf(" %d", maxscale[i]);
 }
+
 printf("\n");
+fprintf(file1, "%f, %f\n", input_dB, maxSNR);
+
 
 }
-
+fclose(file1);
 }
