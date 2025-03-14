@@ -397,14 +397,14 @@ void fft_distortion_test(int N, char test, double input_dB, char *scale, double 
   }
   bit_r4_reorder(data, N);
   
-  radix4_fixed_Q24xQ17(data32, N, scale, 0);
-  bit_r4_reorder_fixed_Q17(data32, N);
+  radix4_fixed_Q15(data16, N, scale, 0);
+  bit_r4_reorder_fixed_Q15(data16, N, scale[6]);
   
   mean_error = 0.0;
   mean_in = 0.0;
   for (i = 0; i < N; i++) {
       mean_in += data[i].r * data[i].r + data[i].i * data[i].i;
-      mean_error += pow((data[i].r - ((double)data32[i].r / 32767.0)), 2) + pow((data[i].i - ((double)data32[i].i / 32767.0)), 2);
+      mean_error += pow((data[i].r - ((double)data16[i].r / 32767.0)), 2) + pow((data[i].i - ((double)data16[i].i / 32767.0)), 2);
   }
   
   SNR = 10 * log10(mean_in / mean_error);
@@ -415,7 +415,7 @@ void fft_distortion_test(int N, char test, double input_dB, char *scale, double 
   
   fprintf(file, "data = [\n");
   for (i = 0; i < N; i++) {
-      fprintf(file, "%f %f %d %d\n", data[i].r, data[i].i, data32[i].r , data32[i].i);
+      fprintf(file, "%f %f %d %d\n", data[i].r, data[i].i, data16[i].r , data16[i].i);
   }
   fprintf(file, "];\n");
   fclose(file);
@@ -488,7 +488,7 @@ void FFT_main(int argc, char *argv[])
 
   printf("res_%d = [ \n",N);    
   char Title_1[50];
-  sprintf(Title_1, "distortion_test_%d_%d.txt", N,test);
+  sprintf(Title_1, "distortion_test_%d_%d_15.txt", N,test);
 
   // Open the file
   FILE *file1 = fopen(Title_1, "w");
