@@ -4,11 +4,11 @@
 
 int main() {
     int N_values[] = {64, 256, 1024, 4096};  // Corrected array declaration
-    int testing_values[] = {0, 1, 2};
+    int testing_values[] = {1};
     int i, j;
 
     for (i = 0; i < 4; i++) {  // Fixed loop syntax
-        for (j = 0; j < 3; j++) {
+        for (j = 0; j < 1; j++) {
             char N_str[10], test_str[10];
             sprintf(N_str, "%d", N_values[i]);   // Convert integer to string
             sprintf(test_str, "%d", testing_values[j]);
